@@ -1,5 +1,46 @@
-2020-10-08 13:31:50,814[INFO ][main            ][                         bot.Bot] - Bot started!
-2020-10-08 13:32:03,964[DEBUG][elegram Executor][                         bot.Bot] - onUpdateReceived
-2020-10-08 13:32:03,967[DEBUG][elegram Executor][                         bot.Bot] - Receive new Update. updateID: 554713853
-2020-10-08 13:32:11,779[DEBUG][elegram Executor][                         bot.Bot] - onUpdateReceived
-2020-10-08 13:32:11,779[DEBUG][elegram Executor][                         bot.Bot] - Receive new Update. updateID: 554713854
+2020-10-08 13:31:50,814[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:32:03,964[DEBUG][elegram Executor][                         Bot] - onUpdateReceived
+2020-10-08 13:32:03,967[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713853
+2020-10-08 13:32:11,779[DEBUG][elegram Executor][                         Bot] - onUpdateReceived
+2020-10-08 13:32:11,779[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713854
+2020-10-08 13:35:40,587[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:35:41,177[DEBUG][elegram Executor][                         Bot] - Бот работает
+2020-10-08 13:35:41,186[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713855
+2020-10-08 13:35:41,186[DEBUG][elegram Executor][                         Bot] - Бот работает
+2020-10-08 13:35:41,186[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713856
+2020-10-08 13:35:41,186[DEBUG][elegram Executor][                         Bot] - Бот работает
+2020-10-08 13:35:41,186[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713857
+2020-10-08 13:35:45,736[DEBUG][elegram Executor][                         Bot] - Бот работает
+2020-10-08 13:35:45,737[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713858
+2020-10-08 13:35:50,119[DEBUG][elegram Executor][                         Bot] - Бот работает
+2020-10-08 13:35:50,119[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713859
+2020-10-08 13:36:18,220[DEBUG][elegram Executor][                         Bot] - Бот работает
+2020-10-08 13:36:18,221[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713860
+2020-10-08 13:37:08,341[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:37:08,977[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713861
+2020-10-08 13:37:55,085[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713862
+2020-10-08 13:38:03,066[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713863
+2020-10-08 13:38:17,347[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:38:24,846[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713864
+2020-10-08 13:39:25,974[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:39:51,875[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:41:13,002[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:41:24,785[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713865
+2020-10-08 13:41:28,523[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713866
+2020-10-08 13:43:39,886[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713867
+2020-10-08 13:44:40,606[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713868
+2020-10-08 13:45:23,566[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:47:56,126[INFO ][main            ][                         Bot] - Bot started!
+2020-10-08 13:48:05,594[DEBUG][elegram Executor][                         Bot] - Receive new Update. updateID: 554713869
+2020-10-08 13:58:55,078[INFO ][main            ][example.telegramBotTest2.bot.Bot] - Bot started!
+2020-10-08 13:59:46,311[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713875
+2020-10-08 14:00:17,282[INFO ][main            ][example.telegramBotTest2.bot.Bot] - Bot started!
+2020-10-08 14:01:10,237[INFO ][main            ][example.telegramBotTest2.bot.Bot] - Bot started!
+2020-10-08 14:01:15,121[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713876
+2020-10-08 14:01:21,031[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713877
+2020-10-08 14:03:00,210[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713878
+2020-10-08 14:03:11,401[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713879
+2020-10-08 14:03:23,254[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713880
+2020-10-08 14:03:56,466[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713881
+2020-10-08 14:03:58,659[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713882
+2020-10-08 14:04:07,851[DEBUG][elegram Executor][example.telegramBotTest2.bot.Bot] - Receive new Update. updateID: 554713883

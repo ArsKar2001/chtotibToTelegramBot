@@ -1,4 +1,4 @@
-import bot.Bot;
+import com.example.telegramBotTest2.bot.Bot;
 import org.telegram.telegrambots.ApiContextInitializer;
 
 

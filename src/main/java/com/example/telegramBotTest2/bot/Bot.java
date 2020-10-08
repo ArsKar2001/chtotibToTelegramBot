@@ -1,4 +1,4 @@
-package bot;
+package com.example.telegramBotTest2.bot;
 
 import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
@@ -14,25 +14,28 @@ public class Bot extends TelegramLongPollingBot {
 
     private static final Logger LOG = Logger.getLogger(Bot.class);
     private static final short PAUSE = 10000;
+    private static final String BOT_NAME = BotConfig.USERNAME_BOT;
 
     @Override
     public void onUpdateReceived(Update update) {
 
-        LOG.debug("onUpdateReceived");
         LOG.debug("Receive new Update. updateID: " + update.getUpdateId());
 
         Long chatId = update.getMessage().getChatId();
         String inputText = update.getMessage().getText();
 
-        if (inputText.startsWith("/start")) {
-            SendMessage message = new SendMessage();
-            message.setChatId(chatId);
-            message.setText("Hello. This is start message");
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        try {
+            if (inputText.startsWith("/start")) {
+                message.setText("Привет!!!\nМеня зовут " + BOT_NAME + ", а моего хозаина зовут - Сеня :D\nНапиши мне что-нибудь...");
+
+            } else {
+                message.setText("Я могу тебе отвечать!)))");
             }
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 
