@@ -1,42 +1,28 @@
 package com.example.telegramBotTest2.bot;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-@NoArgsConstructor
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+@AllArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
     private static final Logger LOG = Logger.getLogger(Bot.class);
     private static final short PAUSE = 10000;
-    private static final String BOT_NAME = BotConfig.USERNAME_BOT;
+    public final Queue<Object> sendQueue = new ConcurrentLinkedDeque<>();
+    public final Queue<Object> receiveQueue = new ConcurrentLinkedDeque<>();
 
     @Override
     public void onUpdateReceived(Update update) {
-
         LOG.debug("Receive new Update. updateID: " + update.getUpdateId());
-
-        Long chatId = update.getMessage().getChatId();
-        String inputText = update.getMessage().getText();
-
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        try {
-            if (inputText.startsWith("/start")) {
-                message.setText("Привет!!!\nМеня зовут " + BOT_NAME + ", а моего хозаина зовут - Сеня :D\nНапиши мне что-нибудь...");
-
-            } else {
-                message.setText("Я могу тебе отвечать!)))");
-            }
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        receiveQueue.add(update);
     }
 
     @Override
