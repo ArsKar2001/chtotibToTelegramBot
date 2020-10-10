@@ -1,4 +1,4 @@
-package com.example.telegramBotTest2.commands;
+package com.example.telegramBotTest.commands;
 
 import junit.framework.TestCase;
 

@@ -1,6 +1,6 @@
-package com.example.telegramBotTest2.service;
+package com.example.telegramBotTest.service;
 
-import com.example.telegramBotTest2.bot.Bot;
+import com.example.telegramBotTest.bot.Bot;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
@@ -11,7 +11,7 @@ public class MessageSender implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(MessageSender.class);
     private final short SLEEP_TIME_MS = 1000;
-    private Bot bot;
+    private final Bot bot;
 
     public MessageSender(Bot bot) {
         this.bot = bot;
@@ -32,21 +32,22 @@ public class MessageSender implements Runnable {
      */
     @Override
     public void run() {
-        LOG.info("[STARTED] MessageSender. Bot class - "+bot);
+        LOG.info("[STARTED] MessageSender. Bot class - " + bot);
         try {
             while (true) {
-                for (Object o : bot.sendQueue) {
-                    LOG.debug("Получение нового сообщение для отправки "+o);
-                    send(o);
+                for (Object object = bot.sendQueue.poll(); object != null; object = bot.sendQueue.poll()) {
+                    LOG.debug("Получаем новое сообщение для отправки " + object.toString());
+                    send(object);
                 }
                 try {
                     Thread.sleep(SLEEP_TIME_MS);
-                } catch (InterruptedException  e) {
-                    LOG.error("Прерывание при работе со списком сообщений", e);
+                } catch (InterruptedException e) {
+                    LOG.error("Take interrupt while operate msg list", e);
                 }
             }
+
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -60,12 +61,12 @@ public class MessageSender implements Runnable {
             switch (type) {
                 case EXECUTE:
                     BotApiMethod<Message> messageBotApiMethod = (BotApiMethod<Message>) o;
-                    LOG.debug("Использован EXECUTE для "+messageBotApiMethod);
+                    LOG.debug("Использован BotApiMethod для "+messageBotApiMethod.toString());
                     bot.execute(messageBotApiMethod);
                     break;
                 case STICKER:
                     SendSticker sendSticker = (SendSticker) o;
-                    LOG.debug("Использован SendSticker для "+sendSticker);
+                    LOG.debug("Использован SendSticker для "+sendSticker.toString());
                     bot.execute(sendSticker);
                     break;
                 default:

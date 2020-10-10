@@ -1,4 +1,4 @@
-package com.example.telegramBotTest2.bot;
+package com.example.telegramBotTest.bot;
 
 public class BotConfig {
     public static final String USERNAME_BOT = "chtotibTest1_bot";
