@@ -1,10 +1,8 @@
 import com.example.telegramBotTest.bot.Bot;
-import com.example.telegramBotTest.bot.BotConfig;
 import com.example.telegramBotTest.service.MessageReceiver;
 import com.example.telegramBotTest.service.MessageSender;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 
 public class App {

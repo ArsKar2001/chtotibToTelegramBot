@@ -4,10 +4,7 @@ import com.example.telegramBotTest.bot.Bot;
 import com.example.telegramBotTest.commands.Command;
 import com.example.telegramBotTest.commands.Parser;
 import com.example.telegramBotTest.commands.ParserCommand;
-import com.example.telegramBotTest.handler.AbstractHandler;
-import com.example.telegramBotTest.handler.SystemHandler;
-import com.example.telegramBotTest.handler.NotifyHandler;
-import com.example.telegramBotTest.handler.DefaultHandler;
+import com.example.telegramBotTest.handler.*;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -95,6 +92,10 @@ public class MessageReceiver implements Runnable {
             return new DefaultHandler(bot);
         }
         switch (command) {
+            case REG:
+                RegistrationHandler registrationHandler = new RegistrationHandler(bot);
+                LOG.info("Handler for command ["+command.toString()+"] is: "+registrationHandler.toString());
+                return registrationHandler;
             case NOTIFY:
                 NotifyHandler notifyHandler = new NotifyHandler(bot);
                 LOG.info("Handler for command ["+command.toString()+"] is: "+notifyHandler.toString());
@@ -108,6 +109,7 @@ public class MessageReceiver implements Runnable {
             default:
                 LOG.info("Handler for command [" + command.toString() + "] not Set. Return DefaultHandler");
                 return new DefaultHandler(bot);
+
         }
     }
 
