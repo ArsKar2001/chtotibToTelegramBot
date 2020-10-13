@@ -19,10 +19,9 @@ public class NotifyHandler extends AbstractHandler {
     @Override
     public String operate(String chatId, ParserCommand parserCommand, Update update) {
         String text = parserCommand.getText();
-        if(text.equals("")) {
-            return "Вы должны указать время задержки. Например: /notify 30";
-        }
         long timeInSec;
+
+        if(text.equals("")) return "Вы должны указать время задержки. Например: /notify 30";
         try {
             timeInSec = Long.parseLong(text.trim());
         } catch (NumberFormatException e) {

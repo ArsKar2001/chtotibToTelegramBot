@@ -6,7 +6,10 @@ import com.example.telegramBotTest.commands.Parser;
 import com.example.telegramBotTest.commands.ParserCommand;
 import com.example.telegramBotTest.handler.*;
 import org.apache.log4j.Logger;
+import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static java.lang.Thread.sleep;
@@ -71,12 +74,21 @@ public class MessageReceiver implements Runnable {
     }
 
     private void analyzeForUpdateType(Update update) {
-        Long chatId = update.getMessage().getChatId();
-        String text = update.getMessage().getText();
+        BotApiObject botApiObject = getApiObject(update);
+        String text = "";
+        String chatId = "";
+        if(botApiObject instanceof CallbackQuery) {
+            text = ((CallbackQuery) botApiObject).getData();
+            chatId = ((CallbackQuery) botApiObject).getMessage().getChatId().toString();
+        }
+        if(botApiObject instanceof Message) {
+            text = ((Message) botApiObject).getText();
+            chatId = ((Message) botApiObject).getChatId().toString();
+        }
 
         ParserCommand parserCommand = parser.getParserCommand(text);
         AbstractHandler handlerForCommand = getHandlerForCommand(parserCommand.getCommand());
-        String operationRes = handlerForCommand.operate(chatId.toString(), parserCommand, update);
+        String operationRes = handlerForCommand.operate(chatId, parserCommand, update);
 
         if(!"".equals(operationRes)) {
             SendMessage sendMessage = new SendMessage();
@@ -84,6 +96,11 @@ public class MessageReceiver implements Runnable {
             sendMessage.setText(operationRes);
             bot.sendQueue.add(sendMessage);
         }
+    }
+
+    private BotApiObject getApiObject(Update update) {
+        if(update.hasCallbackQuery()) return update.getCallbackQuery();
+        return update.getMessage();
     }
 
     private AbstractHandler getHandlerForCommand(Command command) {

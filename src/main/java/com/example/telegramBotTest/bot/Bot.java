@@ -1,6 +1,5 @@
 package com.example.telegramBotTest.bot;
 
-import com.sun.scenario.effect.impl.prism.PrRenderInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
