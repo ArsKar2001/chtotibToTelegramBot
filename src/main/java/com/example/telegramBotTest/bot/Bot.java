@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
@@ -74,5 +75,20 @@ public class Bot extends TelegramLongPollingBot {
             }
             botConnection();
         }
+    }
+
+    public String getMessage(Update update) {
+        if(update.hasCallbackQuery()) return update.getCallbackQuery().getData();
+        return update.getMessage().getText();
+    }
+
+    public Long getChatId(Update update) {
+        if(update.hasCallbackQuery()) return update.getCallbackQuery().getMessage().getChatId();
+        return update.getMessage().getChatId();
+    }
+
+    public int getTelegramId(Update update) {
+        if(update.hasCallbackQuery()) return update.getCallbackQuery().getMessage().getFrom().getId();
+        return update.getMessage().getFrom().getId();
     }
 }

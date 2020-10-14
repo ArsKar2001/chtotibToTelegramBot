@@ -34,7 +34,7 @@ public class SystemHandler extends AbstractHandler implements ButtonInterface {
                 bot.sendQueue.add(getMessageHelp(chatId));
                 break;
             case ID:
-                String telegramId = getTelegramId(update);
+                int telegramId = bot.getTelegramId(update);
                 return "Ваш TelegramId: "+telegramId;
         }
         return "";

@@ -18,14 +18,14 @@ public class RegistrationHandler extends AbstractHandler {
 
     public RegistrationHandler(Bot bot) {
         super(bot);
-        dbConnection = DBConnection.getInstance();
+        dbConnection = new DBConnection(bot, bot.getChatId(bot.getUpdate()));
     }
 
     @Override
     public String operate(Long chatId, ParserCommand parserCommand, Update update) {
         if(this.getDbConnection().isExists(chatId)) {
             LOG.info("[STARTED] Registration to chatId: "+chatId);
-            Thread thread = new Thread(new Registration(bot, chatId));
+            Thread thread = new Thread(new Registration(bot, update, parserCommand));
             thread.setName("UserReg");
             thread.start();
             return "";

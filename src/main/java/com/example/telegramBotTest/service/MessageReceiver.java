@@ -7,7 +7,6 @@ import com.example.telegramBotTest.commands.Parser;
 import com.example.telegramBotTest.commands.ParserCommand;
 import com.example.telegramBotTest.handler.*;
 import org.apache.log4j.Logger;
-import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -18,8 +17,12 @@ public class MessageReceiver implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(MessageReceiver.class);
     private static final short WAIT_NEW_MESSAGE = 1000;
+
     private final Bot bot;
     private final Parser parser;
+
+    private String mess;
+    private Long chatId;
 
     public MessageReceiver(Bot bot) {
         this.bot = bot;
@@ -43,7 +46,7 @@ public class MessageReceiver implements Runnable {
         try {
             while (true) {
                 for (Object o = bot.receiveQueue.poll(); o != null; o = bot.receiveQueue.poll()) {
-                    LOG.debug("Получаем новый объект для анализа...");
+                    LOG.debug("Новый объект для анализа...");
                     analyze(o);
                 }
                 try {
@@ -65,6 +68,7 @@ public class MessageReceiver implements Runnable {
     private void analyze(Object o) {
         if(o instanceof Update) {
             Update update = (Update) o;
+            LOG.debug("Update received: "+update.toString());
             analyzeForUpdateType(update);
         } else {
             LOG.warn("Unknown type object: "+o.toString());
@@ -72,29 +76,14 @@ public class MessageReceiver implements Runnable {
     }
 
     private void analyzeForUpdateType(Update update) {
-        Long chatId;
-        String text;
 
-        if(update.hasCallbackQuery()) {
-            chatId = update.getCallbackQuery().getMessage().getChatId();
-            text = update.getCallbackQuery().getData();
-        } else {
-            chatId = update.getMessage().getChatId();
-            text = update.getMessage().getText();
-        }
+        chatId = bot.getChatId(update);
+        mess = bot.getMessage(update);
 
         if(!bot.chatIdTextMap.containsKey(chatId))
-            bot.chatIdTextMap.put(chatId, text);
+            bot.chatIdTextMap.put(chatId, mess);
 
-        if(Registration.CHAT_ID != null) {
-            if(Registration.CHAT_ID.equals(chatId)) {
-                Registration registration = new Registration(bot, text);
-                new Thread(registration).start();
-                return;
-            }
-        }
-
-        ParserCommand parserCommand = parser.getParserCommand(text);
+        ParserCommand parserCommand = parser.getParserCommand(mess);
         AbstractHandler handlerForCommand = getHandlerForCommand(parserCommand.getCommand());
         String operationRes = handlerForCommand.operate(chatId, parserCommand, update);
 
@@ -106,15 +95,6 @@ public class MessageReceiver implements Runnable {
         }
     }
 
-
-    private void goToThead(Long chatId, String text) {
-        if(!bot.chatIdTextMap.containsKey(chatId))
-            bot.chatIdTextMap.put(chatId, text);
-        if(Registration.CHAT_ID.equals(chatId)) {
-            Registration registration = new Registration(bot, text);
-            new Thread(registration).start();
-        }
-    }
 
     private AbstractHandler getHandlerForCommand(Command command) {
         if(command == null) {
