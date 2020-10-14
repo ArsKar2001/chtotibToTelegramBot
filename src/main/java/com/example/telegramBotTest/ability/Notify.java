@@ -1,6 +1,7 @@
 package com.example.telegramBotTest.ability;
 
 import com.example.telegramBotTest.bot.Bot;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
@@ -11,10 +12,12 @@ public class Notify implements Runnable {
     private static final int MS_IN_SEC = 1000;
 
     private final Bot bot;
-    private final String chatId;
+
+    @Getter
+    private final Long chatId;
     private final long l;
 
-    public Notify(Bot bot, String chatId, long l) {
+    public Notify(Bot bot, Long chatId, long l) {
         this.bot = bot;
         this.chatId = chatId;
         this.l = l;

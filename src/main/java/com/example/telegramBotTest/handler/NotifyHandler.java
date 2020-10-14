@@ -17,7 +17,7 @@ public class NotifyHandler extends AbstractHandler {
     }
 
     @Override
-    public String operate(String chatId, ParserCommand parserCommand, Update update) {
+    public String operate(Long chatId, ParserCommand parserCommand, Update update) {
         String text = parserCommand.getText();
         long timeInSec;
 

@@ -11,7 +11,7 @@ public class DefaultHandler extends AbstractHandler {
     }
 
     @Override
-    public String operate(String chatId, ParserCommand parserCommand, Update update) {
+    public String operate(Long chatId, ParserCommand parserCommand, Update update) {
         return "Я не знаю такой команды :(\n" +
                 "Введи команду /help, чтобы посмотреть, что я умею.";
     }

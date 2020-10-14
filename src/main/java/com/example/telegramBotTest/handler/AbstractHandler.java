@@ -11,5 +11,11 @@ public abstract class AbstractHandler {
         this.bot = bot;
     }
 
-    public abstract String operate(String chatId, ParserCommand parserCommand, Update update);
+    public abstract String operate(Long chatId, ParserCommand parserCommand, Update update);
+
+    public String getTelegramId(Update update) {
+        if(update.hasCallbackQuery()) return update.getCallbackQuery().getMessage().getFrom().getId().toString();
+        return update.getMessage().getFrom().getId().toString();
+    }
+
 }

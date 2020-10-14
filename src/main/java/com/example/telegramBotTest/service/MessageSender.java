@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class MessageSender implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(MessageSender.class);
-    private final short SLEEP_TIME_MS = 1000;
+    private static final short SLEEP_TIME_MS = 1000;
     private final Bot bot;
 
     public MessageSender(Bot bot) {
@@ -36,7 +36,7 @@ public class MessageSender implements Runnable {
         try {
             while (true) {
                 for (Object object = bot.sendQueue.poll(); object != null; object = bot.sendQueue.poll()) {
-                    LOG.debug("Получаем новое сообщение для отправки " + object.toString());
+                    LOG.debug("Получаем новое сообщение для отправки...");
                     send(object);
                 }
                 try {

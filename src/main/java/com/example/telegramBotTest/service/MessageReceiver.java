@@ -1,5 +1,6 @@
 package com.example.telegramBotTest.service;
 
+import com.example.telegramBotTest.ability.Registration;
 import com.example.telegramBotTest.bot.Bot;
 import com.example.telegramBotTest.commands.Command;
 import com.example.telegramBotTest.commands.Parser;
@@ -8,8 +9,6 @@ import com.example.telegramBotTest.handler.*;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static java.lang.Thread.sleep;
@@ -44,7 +43,7 @@ public class MessageReceiver implements Runnable {
         try {
             while (true) {
                 for (Object o = bot.receiveQueue.poll(); o != null; o = bot.receiveQueue.poll()) {
-                    LOG.debug("Новый объект для анализа "+o.toString());
+                    LOG.debug("Получаем новый объект для анализа...");
                     analyze(o);
                 }
                 try {
@@ -66,7 +65,6 @@ public class MessageReceiver implements Runnable {
     private void analyze(Object o) {
         if(o instanceof Update) {
             Update update = (Update) o;
-            LOG.debug("Update received: "+update.toString());
             analyzeForUpdateType(update);
         } else {
             LOG.warn("Unknown type object: "+o.toString());
@@ -74,16 +72,26 @@ public class MessageReceiver implements Runnable {
     }
 
     private void analyzeForUpdateType(Update update) {
-        BotApiObject botApiObject = getApiObject(update);
-        String text = "";
-        String chatId = "";
-        if(botApiObject instanceof CallbackQuery) {
-            text = ((CallbackQuery) botApiObject).getData();
-            chatId = ((CallbackQuery) botApiObject).getMessage().getChatId().toString();
+        Long chatId;
+        String text;
+
+        if(update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+            text = update.getCallbackQuery().getData();
+        } else {
+            chatId = update.getMessage().getChatId();
+            text = update.getMessage().getText();
         }
-        if(botApiObject instanceof Message) {
-            text = ((Message) botApiObject).getText();
-            chatId = ((Message) botApiObject).getChatId().toString();
+
+        if(!bot.chatIdTextMap.containsKey(chatId))
+            bot.chatIdTextMap.put(chatId, text);
+
+        if(Registration.CHAT_ID != null) {
+            if(Registration.CHAT_ID.equals(chatId)) {
+                Registration registration = new Registration(bot, text);
+                new Thread(registration).start();
+                return;
+            }
         }
 
         ParserCommand parserCommand = parser.getParserCommand(text);
@@ -98,9 +106,14 @@ public class MessageReceiver implements Runnable {
         }
     }
 
-    private BotApiObject getApiObject(Update update) {
-        if(update.hasCallbackQuery()) return update.getCallbackQuery();
-        return update.getMessage();
+
+    private void goToThead(Long chatId, String text) {
+        if(!bot.chatIdTextMap.containsKey(chatId))
+            bot.chatIdTextMap.put(chatId, text);
+        if(Registration.CHAT_ID.equals(chatId)) {
+            Registration registration = new Registration(bot, text);
+            new Thread(registration).start();
+        }
     }
 
     private AbstractHandler getHandlerForCommand(Command command) {

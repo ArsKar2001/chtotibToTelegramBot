@@ -11,7 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class SystemHandler extends AbstractHandler implements ButtonInterface {
     }
 
     @Override
-    public String operate(String chatId, ParserCommand parserCommand, Update update) {
+    public String operate(Long chatId, ParserCommand parserCommand, Update update) {
         Command command = parserCommand.getCommand();
         switch (command) {
             case START:
@@ -35,12 +34,13 @@ public class SystemHandler extends AbstractHandler implements ButtonInterface {
                 bot.sendQueue.add(getMessageHelp(chatId));
                 break;
             case ID:
-                return "Ваш TelegramId: "+update.getMessage().getFrom().getId();
+                String telegramId = getTelegramId(update);
+                return "Ваш TelegramId: "+telegramId;
         }
         return "";
     }
 
-    private SendMessage getMessageHelp(String chatId) {
+    private SendMessage getMessageHelp(Long chatId) {
         String message = "*Это справочное сообщение.*";
         List<InlineKeyboardButton> keyboardButtons = new ArrayList<>(this.setInlineKeyboardButtons(
                 new InlineKeyboardButton().setText("Старт").setCallbackData("/start"),
@@ -51,11 +51,10 @@ public class SystemHandler extends AbstractHandler implements ButtonInterface {
         return new SendMessage().setChatId(chatId).enableMarkdown(true).setText(message).setReplyMarkup(keyboardMarkup);
     }
 
-    private SendMessage getMessageStart(String chatId) {
-        String message = "Привет, "+bot.getUpdate().getMessage().getFrom().getUserName()+"! Меня зовут *" + bot.getBotUsername() + "*." + END_LINE_STR +
+    private SendMessage getMessageStart(Long chatId) {
+        String message = "Привет! Меня зовут *" + bot.getBotUsername() + "*." + END_LINE_STR +
                 "Моего создателя зовут - Сеня :D" + END_LINE_STR +
-                "Я был создан для работы со студентами." + END_LINE_STR +
-                "Чтобы посмотреть, что я умею - просто введи команду [/help](/help)" + END_LINE_STR;
+                "Я был создан для работы со студентами.";
         List<InlineKeyboardButton> keyboardButtons = new ArrayList<>(this.setInlineKeyboardButtons(
                 new InlineKeyboardButton().setText("Регистрация").setCallbackData("/reg"),
                 new InlineKeyboardButton().setText("Справка").setCallbackData("/help")

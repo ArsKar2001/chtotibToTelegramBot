@@ -11,12 +11,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+@AllArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
     private static final Logger LOG = Logger.getLogger(Bot.class);
     private static final short PAUSE_MS = 10000;
+
+    public final ConcurrentHashMap<Long, String> chatIdTextMap = new ConcurrentHashMap<>();
 
     public final Queue<Object> sendQueue = new ConcurrentLinkedDeque<>();
     public final Queue<Object> receiveQueue = new ConcurrentLinkedDeque<>();
@@ -25,7 +29,7 @@ public class Bot extends TelegramLongPollingBot {
     @Getter
     private String botName;
 
-    @Getter
+    @Setter
     private String botToken;
 
     @Getter
@@ -58,7 +62,7 @@ public class Bot extends TelegramLongPollingBot {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(this);
-            LOG.info("[STARTED] TelegramAPI. Bot Connected. Bot class: " + this.toString());
+            LOG.info("[STARTED] TelegramAPI. Bot Connected.");
         } catch (TelegramApiRequestException e) {
             LOG.error("Не может соедениться. Ожидание "+ PAUSE_MS / 1000+" сек. и выход\n" +
                     "Ошибка: "+e.getMessage(), e);
