@@ -2,27 +2,24 @@ package com.example.telegramBotTest.bot;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 @AllArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
+
     private static final Logger LOG = Logger.getLogger(Bot.class);
     private static final short PAUSE_MS = 10000;
 
-    public final ConcurrentHashMap<Long, String> chatIdTextMap = new ConcurrentHashMap<>();
-
+    public final Queue<Object> processingQueue = new ConcurrentLinkedDeque<>();
     public final Queue<Object> sendQueue = new ConcurrentLinkedDeque<>();
     public final Queue<Object> receiveQueue = new ConcurrentLinkedDeque<>();
 
@@ -80,6 +77,11 @@ public class Bot extends TelegramLongPollingBot {
     public String getMessage(Update update) {
         if(update.hasCallbackQuery()) return update.getCallbackQuery().getData();
         return update.getMessage().getText();
+    }
+
+    public Integer getMessageId(Update update) {
+        if(update.hasCallbackQuery()) return update.getCallbackQuery().getMessage().getMessageId();
+        return update.getMessage().getMessageId();
     }
 
     public Long getChatId(Update update) {

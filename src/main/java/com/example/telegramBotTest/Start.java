@@ -1,26 +1,29 @@
+package com.example.telegramBotTest;
+
 import com.example.telegramBotTest.bot.Bot;
+import com.example.telegramBotTest.database.DB;
 import com.example.telegramBotTest.service.MessageReceiver;
 import com.example.telegramBotTest.service.MessageSender;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.ApiContextInitializer;
 
 
-public class App {
-
-    private static final Logger LOG = Logger.getLogger(App.class);
+public class Start {
+    private static final Logger LOG = Logger.getLogger(Start.class);
     private static final int PRIORITY_FOR_SENDER = 1;
     private static final int PRIORITY_FOR_RECEIVER = 3;
-    private static final String BOT_ADMIN = "321644283";
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
 
         Bot bot = new Bot();
+        DB db = new DB();
 
         MessageReceiver messageReceiver = new MessageReceiver(bot);
         MessageSender messageSender = new MessageSender(bot);
 
         bot.botConnection();
+        db.connectingDB();
 
         Thread receiver = new Thread(messageReceiver);
         receiver.setDaemon(true);

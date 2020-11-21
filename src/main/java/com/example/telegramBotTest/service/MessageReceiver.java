@@ -1,6 +1,5 @@
 package com.example.telegramBotTest.service;
 
-import com.example.telegramBotTest.ability.Registration;
 import com.example.telegramBotTest.bot.Bot;
 import com.example.telegramBotTest.commands.Command;
 import com.example.telegramBotTest.commands.Parser;
@@ -20,9 +19,6 @@ public class MessageReceiver implements Runnable {
 
     private final Bot bot;
     private final Parser parser;
-
-    private String mess;
-    private Long chatId;
 
     public MessageReceiver(Bot bot) {
         this.bot = bot;
@@ -46,7 +42,6 @@ public class MessageReceiver implements Runnable {
         try {
             while (true) {
                 for (Object o = bot.receiveQueue.poll(); o != null; o = bot.receiveQueue.poll()) {
-                    LOG.debug("Новый объект для анализа...");
                     analyze(o);
                 }
                 try {
@@ -76,12 +71,8 @@ public class MessageReceiver implements Runnable {
     }
 
     private void analyzeForUpdateType(Update update) {
-
-        chatId = bot.getChatId(update);
-        mess = bot.getMessage(update);
-
-        if(!bot.chatIdTextMap.containsKey(chatId))
-            bot.chatIdTextMap.put(chatId, mess);
+        Long chatId = bot.getChatId(update);
+        String mess = bot.getMessage(update);
 
         ParserCommand parserCommand = parser.getParserCommand(mess);
         AbstractHandler handlerForCommand = getHandlerForCommand(parserCommand.getCommand());
@@ -110,6 +101,7 @@ public class MessageReceiver implements Runnable {
                 NotifyHandler notifyHandler = new NotifyHandler(bot);
                 LOG.info("Handler for command ["+command.toString()+"] is: "+notifyHandler.toString());
                 return notifyHandler;
+            case MAIN:
             case START:
             case HELP:
             case ID:

@@ -53,7 +53,7 @@ public class Parser {
      */
     private Command getCommandFromText(String text) {
         String upperCaseText = text.toUpperCase().trim();
-        Command command = Command.NONE;
+        Command command = Command.UNKNOWN;
         try {
             command = Command.valueOf(upperCaseText);
         } catch (IllegalArgumentException e) {

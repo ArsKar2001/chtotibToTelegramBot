@@ -4,6 +4,7 @@ import com.example.telegramBotTest.bot.Bot;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -59,6 +60,11 @@ public class MessageSender implements Runnable {
         try {
             MessageType type = messageType(o);
             switch (type) {
+                case UPDATE:
+                    EditMessageText editMessageText = (EditMessageText) o;
+                    LOG.debug("Использован EditMessageText для "+editMessageText.toString());
+                    bot.execute(editMessageText);
+                    break;
                 case EXECUTE:
                     BotApiMethod<Message> messageBotApiMethod = (BotApiMethod<Message>) o;
                     LOG.debug("Использован BotApiMethod для "+messageBotApiMethod.toString());
@@ -80,6 +86,7 @@ public class MessageSender implements Runnable {
     private MessageType messageType(Object o) {
         if(o instanceof SendSticker) return MessageType.STICKER;
         if(o instanceof BotApiMethod) return MessageType.EXECUTE;
+        if(o instanceof EditMessageText) return MessageType.UPDATE;
         return MessageType.NOT_DETECTED;
     }
 
@@ -87,6 +94,6 @@ public class MessageSender implements Runnable {
      *
      */
     enum MessageType {
-        EXECUTE, STICKER, NOT_DETECTED
+        UPDATE, EXECUTE, STICKER, NOT_DETECTED
     }
 }
