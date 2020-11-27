@@ -4,6 +4,7 @@ import com.example.telegramBotTest.bot.Bot;
 import com.example.telegramBotTest.essences.Icon;
 import com.example.telegramBotTest.essences.Role;
 import com.example.telegramBotTest.essences.User;
+import javafx.beans.binding.StringBinding;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -16,40 +17,40 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.example.telegramBotTest.service.Registration.RegStep.*;
 import static java.lang.Thread.sleep;
 
 public class Registration implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(Registration.class);
     private static final long WAIT_NEW_MESSAGE = 1000;
-    public static RegStep step = SELECT_ROLE;
+    public static RegStep step = RegStep.SELECT_ROLE;
 
     private final Bot bot;
-    private final User user;
+    private final Long chatId;
     private boolean isActive;
+    private final User user;
 
-    public Registration(Bot bot) {
+    public Registration(Bot bot, Long chatId) {
         this.bot = bot;
-        user = new User();
+        this.chatId = chatId;
         isActive = true;
+        user = new User();
     }
 
     @Override
     public void run() {
         try {
-            LOG.info("[STARTED] Registration");
+            LOG.info("[STARTED] Registration to chatId: "+chatId);
             Update update;
             while (isActive) {
-                for (Object o = bot.processingRegQueue.poll(); o != null; o = bot.processingRegQueue.poll()) {
+                for (Object o = bot.processingQueue.poll(); o != null; o = bot.processingQueue.poll()) {
                     update = (Update) o;
-                    execute(update);
-                    bot.processingRegQueue.remove(update);
+                    if(bot.getChatId(update).equals(chatId)) nextStep(update);
                 }
                 try {
                     sleep(WAIT_NEW_MESSAGE);
                 } catch (InterruptedException  e) {
-                    disableThead();
+                    disable();
                     LOG.error("Вышло прерывание.", e);
                     return;
                 }
@@ -59,29 +60,27 @@ public class Registration implements Runnable {
         }
     }
 
-    private void disableThead() {
+    void disable() {
         isActive = false;
     }
 
-    public void execute(Update update) {
-        Long chatId = bot.getChatId(update);
+    private void nextStep(Update update) {
         switch (step) {
             case SELECT_ROLE:
                 bot.sendQueue.add(getMessageSelectRole(update));
-                step = SELECT_COURSE;
+                step = RegStep.SELECT_COURSE;
                 break;
             case SELECT_COURSE:
-                String role = bot.getMessage(update);
-                user.setRole((role.equals(Role.STUDENT.toString())) ? Role.STUDENT : Role.TEACHER);
+                String roleId = bot.getMessage(update);
+                user.setRoleId(roleId);
                 bot.sendQueue.add(getEditMessageTextSelectCourse(update));
-                step = SELECT_GROUP;
+                step = RegStep.SELECT_GROUP;
                 break;
             case SELECT_GROUP:
                 String groupYearIndex = bot.getMessage(update);
                 user.setGroupYearIndex(groupYearIndex);
                 bot.sendQueue.add(getData(update));
-                bot.chatIdList.remove(chatId);
-                disableThead();
+                disable();
                 break;
             default:
                 break;
@@ -89,7 +88,6 @@ public class Registration implements Runnable {
     }
 
     private SendMessage getMessageSelectRole(Update update) {
-        Long chatId = bot.getChatId(update);
         String message = "Кто *Ты?*";
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> lists = new ArrayList<>();
@@ -107,7 +105,6 @@ public class Registration implements Runnable {
                 .setReplyMarkup(markup);
     }
     private EditMessageText getEditMessageTextSelectCourse(Update update) {
-        Long chatId = bot.getChatId(update);
         String message = "Какой у тебя курс?";
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> lists = new ArrayList<>();
@@ -133,8 +130,7 @@ public class Registration implements Runnable {
     }
 
     private EditMessageText getData(Update update) {
-        Long chatId = bot.getChatId(update);
-        String message = "*Роль*: " + user.getRole() +
+        String message = "*Роль*: " + user.getRoleId() +
                 "\n*Год поступления*: " + user.getGroupYearIndex();
         return new EditMessageText()
                 .setChatId(chatId)

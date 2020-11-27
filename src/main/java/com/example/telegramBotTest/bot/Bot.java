@@ -1,19 +1,14 @@
 package com.example.telegramBotTest.bot;
 
-import com.example.telegramBotTest.Config;
-import com.example.telegramBotTest.service.Registration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -24,10 +19,9 @@ public class Bot extends TelegramLongPollingBot {
     private static final Logger LOG = Logger.getLogger(Bot.class);
     private static final short PAUSE_MS = 10000;
 
-    public final Queue<Object> processingRegQueue = new ConcurrentLinkedDeque<>();
+    public final Queue<Object> processingQueue = new ConcurrentLinkedDeque<>();
     public final Queue<Object> sendQueue = new ConcurrentLinkedDeque<>();
     public final Queue<Object> receiveQueue = new ConcurrentLinkedDeque<>();
-    public final List<Long> chatIdList = new ArrayList<>();
 
     @Setter
     @Getter
@@ -41,9 +35,8 @@ public class Bot extends TelegramLongPollingBot {
 
 
     public Bot() {
-        JSONObject config = Config.getBotConfig();
-        this.botName = config.get("botUserName").toString();
-        this.botToken = config.get("botToken").toString();
+        this.botName = BotConfig.USERNAME_BOT;
+        this.botToken = BotConfig.TOKEN_BOT;
     }
 
     @Override
@@ -91,7 +84,7 @@ public class Bot extends TelegramLongPollingBot {
         return update.getMessage().getMessageId();
     }
 
-    public Long getChatId(Update update) { ;
+    public Long getChatId(Update update) {
         if(update.hasCallbackQuery()) return update.getCallbackQuery().getMessage().getChatId();
         return update.getMessage().getChatId();
     }

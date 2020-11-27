@@ -1,6 +1,6 @@
 package com.example.telegramBotTest.commands;
 
-public enum ChatCommands {
+public enum Command {
     HELP, ID,
     NONE,
     NOTFORME,
