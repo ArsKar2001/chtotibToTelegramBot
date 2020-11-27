@@ -1,9 +1,10 @@
 package com.example.telegramBotTest.service;
 
 import com.example.telegramBotTest.bot.Bot;
-import com.example.telegramBotTest.commands.Command;
+import com.example.telegramBotTest.commands.ChatCommands;
 import com.example.telegramBotTest.commands.Parser;
 import com.example.telegramBotTest.commands.ParserCommand;
+import com.example.telegramBotTest.essences.Process;
 import com.example.telegramBotTest.handler.*;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -75,7 +76,7 @@ public class MessageReceiver implements Runnable {
         String mess = bot.getMessage(update);
 
         ParserCommand parserCommand = parser.getParserCommand(mess);
-        AbstractHandler handlerForCommand = getHandlerForCommand(parserCommand.getCommand());
+        AbstractHandler handlerForCommand = getHandlerForCommand(parserCommand.getChatCommands());
         String operationRes = handlerForCommand.operate(chatId, parserCommand, update);
 
         if(!"".equals(operationRes)) {
@@ -86,33 +87,31 @@ public class MessageReceiver implements Runnable {
         }
     }
 
-
-    private AbstractHandler getHandlerForCommand(Command command) {
-        if(command == null) {
+    private AbstractHandler getHandlerForCommand(ChatCommands chatCommand) {
+        if(chatCommand == null) {
             LOG.warn("Null command receiver. This is a bad scenario.");
             return new DefaultHandler(bot);
         }
-        switch (command) {
-            case REG:
-                RegistrationHandler registrationHandler = new RegistrationHandler(bot);
-                LOG.info("Handler for command ["+command.toString()+"] is: "+registrationHandler.toString());
-                return registrationHandler;
+        switch (chatCommand) {
             case NOTIFY:
                 NotifyHandler notifyHandler = new NotifyHandler(bot);
-                LOG.info("Handler for command ["+command.toString()+"] is: "+notifyHandler.toString());
+                LOG.info("Handler for command ["+ chatCommand.toString()+"] is: "+notifyHandler.toString());
                 return notifyHandler;
+            case REG:
+                RegistrationHandler registrationHandler = new RegistrationHandler(bot);
+                LOG.info("Handler for command [" + chatCommand.toString() + "] is: "+registrationHandler.toString());
+                return registrationHandler;
             case MAIN:
             case START:
             case HELP:
             case ID:
                 SystemHandler systemHandler = new SystemHandler(bot);
-                LOG.info("Handler for command ["+command.toString()+"] is: "+ systemHandler.toString());
+                LOG.info("Handler for command ["+ chatCommand.toString()+"] is: "+ systemHandler.toString());
                 return systemHandler;
             default:
-                LOG.info("Handler for command [" + command.toString() + "] not Set. Return DefaultHandler");
+                LOG.info("Handler for command [" + chatCommand.toString() + "] not Set. Return DefaultHandler");
                 return new DefaultHandler(bot);
 
         }
     }
-
 }

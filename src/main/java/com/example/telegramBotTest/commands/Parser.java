@@ -19,18 +19,18 @@ public class Parser {
      */
     public ParserCommand getParserCommand(String text) {
         String trimStr = (text != null) ? text.trim() : "";
-        ParserCommand command = new ParserCommand(Command.NONE, trimStr);
+        ParserCommand command = new ParserCommand(ChatCommands.NONE, trimStr);
 
         if(trimStr.equals("")) return command;
         Pair<String, String> commandAndText = getSeparateCommand(text);
         if(isCommand(commandAndText.getKey())) {
             if(isCommandForMe(commandAndText.getKey())) {
                 String commandFromParse = cutCommandFromFullText(commandAndText.getKey());
-                Command commandFromText = getCommandFromText(commandFromParse);
+                ChatCommands chatCommandsFromText = getCommandFromText(commandFromParse);
                 command.setText(commandAndText.getValue());
-                command.setCommand(commandFromText);
+                command.setChatCommands(chatCommandsFromText);
             } else {
-                command.setCommand(Command.NOTFORME);
+                command.setChatCommands(ChatCommands.NOTFORME);
                 command.setText(commandAndText.getValue());
             }
         }
@@ -51,16 +51,16 @@ public class Parser {
      * @param text
      * @return
      */
-    private Command getCommandFromText(String text) {
+    private ChatCommands getCommandFromText(String text) {
         String upperCaseText = text.toUpperCase().trim();
-        Command command = Command.UNKNOWN;
+        ChatCommands chatCommands = ChatCommands.UNKNOWN;
         try {
-            command = Command.valueOf(upperCaseText);
+            chatCommands = ChatCommands.valueOf(upperCaseText);
         } catch (IllegalArgumentException e) {
             LOG.error("Не смог определить комманду: "+text+". " +
                     "Ошибка: "+e.getMessage());
         }
-        return command;
+        return chatCommands;
     }
 
     /**

@@ -1,15 +1,19 @@
 package com.example.telegramBotTest.handler;
 
-import com.example.telegramBotTest.commands.Command;
-import com.example.telegramBotTest.service.Registration;
+import com.example.telegramBotTest.commands.ChatCommands;
 import com.example.telegramBotTest.bot.Bot;
 import com.example.telegramBotTest.commands.ParserCommand;
+import com.example.telegramBotTest.essences.Process;
+import com.example.telegramBotTest.interfaces.InlineKeyboardBuilder;
+import com.example.telegramBotTest.service.Registration;
 import lombok.var;
+import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Set;
 
 public class DefaultHandler extends AbstractHandler {
+    private static final Logger LOG = Logger.getLogger(DefaultHandler.class);
 
     public DefaultHandler(Bot bot) {
         super(bot);
@@ -17,16 +21,17 @@ public class DefaultHandler extends AbstractHandler {
 
     @Override
     public String operate(Long chatId, ParserCommand parserCommand, Update update) {
-        if(!parserCommand.getCommand().equals(Command.UNKNOWN)) {
-            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-            for (var thread : threadSet) {
-                if (thread.getName().equals("Reg_" + chatId)) {
-                    bot.processingQueue.add(update);
-                    return "";
-                }
-            }
+        if (bot.chatIdList.contains(chatId)) {
+            bot.processingRegQueue.add(update);
         }
-        return "Я не знаю такой команды :(\n" +
-                "Введи команду /help, чтобы посмотреть, что я умею.";
+        if(parserCommand.getChatCommands().equals(ChatCommands.UNKNOWN)) {
+            bot.sendQueue.add(InlineKeyboardBuilder.getMessageMain(update, chatId));
+            return "Я не знаю такой команды :(\n";
+        }
+        return "";
+    }
+
+    private void doSomeWithTextForUser(Update update) {
+
     }
 }

@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParserCommand {
-    Command command = Command.NONE;
+    ChatCommands chatCommands = ChatCommands.NONE;
     String text = "";
 }

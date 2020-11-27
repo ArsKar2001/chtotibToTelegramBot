@@ -12,15 +12,7 @@ import lombok.Setter;
 public class User {
     Long chatId;
     String groupYearIndex;
-    int roleId;
-
-    public void setRoleId(String roleId) {
-        this.roleId = Integer.parseInt(roleId);
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
+    Role role;
 
     public void setGroupYearIndex(String year) {
         int lastIndex = year.length();

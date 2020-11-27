@@ -4,6 +4,7 @@ import com.example.telegramBotTest.bot.Bot;
 import com.example.telegramBotTest.database.DB;
 import com.example.telegramBotTest.service.MessageReceiver;
 import com.example.telegramBotTest.service.MessageSender;
+import com.example.telegramBotTest.service.Registration;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.ApiContextInitializer;
 
@@ -11,6 +12,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 public class Start {
     private static final Logger LOG = Logger.getLogger(Start.class);
     private static final int PRIORITY_FOR_SENDER = 1;
+    private static final int PRIORITY_FOR_REG = 2;
     private static final int PRIORITY_FOR_RECEIVER = 3;
 
     public static void main(String[] args) {
@@ -21,6 +23,7 @@ public class Start {
 
         MessageReceiver messageReceiver = new MessageReceiver(bot);
         MessageSender messageSender = new MessageSender(bot);
+        Registration registration = new Registration(bot);
 
         bot.botConnection();
         db.connectingDB();
@@ -36,6 +39,12 @@ public class Start {
         sender.setName("MsgSender");
         sender.setPriority(PRIORITY_FOR_SENDER);
         sender.start();
+
+        Thread reg = new Thread(registration);
+        reg.setName("RegUser");
+        reg.setPriority(PRIORITY_FOR_REG);
+        reg.setDaemon(true);
+        reg.start();
 
 //        sendStartReport(bot);
     }
